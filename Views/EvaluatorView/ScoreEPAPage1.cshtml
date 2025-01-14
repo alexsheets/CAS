@@ -1,0 +1,121 @@
+﻿@using Kendo.Mvc.UI;
+
+@{
+    EPA.Classes.GetDbItems dbItemsGet = new EPA.Classes.GetDbItems();
+    // need to retrieve questions associated with the EPA as in EPA 1a etc. 
+    // need to be saved as result items where the score is 0, 1 or 2 (yes, no, not applicable)
+    
+}
+
+@model EPA.Models.ViewModels.ScoringParentViewModel
+
+<style>
+
+    #ScoreEPAPage1 {
+        margin-top: 2%;
+        padding-bottom: 7%;
+        text-align: center !important;
+    }
+
+    label {
+        display: block;
+    }
+
+    .inputDiv1 {
+        display: inline-block;
+    }
+
+    .theDiv {
+        display: none;
+    }
+
+    .inputDiv2 {
+        display: inline-block;
+        width: 150px;
+    }
+
+    .submitBtnDiv {
+        margin-top: 1%;
+        margin-bottom: 2%;
+    }
+
+    h2 {
+        margin-bottom: 1%;
+    }
+
+    h4, h5 {
+      width: 50%;
+      height: 60px;
+      margin: 0;
+      padding: 0;
+      display: inline;
+    }​
+
+    div.slider {
+        width: 300%;
+    }
+
+    div.slider .k-slider-selection {
+        display: none;
+    }
+
+</style>
+
+
+<div id="ScoreEPAPage1">
+
+    <!-- if there is an error, show the message at the top of the page that has been returned from the controller -->
+    @if (TempData["ValidationMsg"] != null)
+    {
+        <div class="form-row" id="AlertDiv">
+            <div class="alert alert-danger text-center" style="width:400px;margin:0 auto;margin-top:2%;" role="alert">
+                @TempData["ValidationMsg"]
+            </div>
+        </div>
+    }
+    @Html.Raw("<br />")
+
+
+    <h2>Questions associated with this EPA:</h2>
+    <h4>2: Yes, 1: No, 0: N/A</h4>
+    @Html.Raw("<br />")
+    @Html.Raw("<br />")
+
+
+    @using (Html.BeginForm("SubmitEPAScorePage1", "EvaluatorView", FormMethod.Post, new { @id = "SubmitEPAScorePage1" }))
+    {
+
+        @foreach (var question in Model.EvaluatorEPAFirstPageVM.Questions)
+        {
+            <h4 >@question.QuestionId</h4> <h5>@question.QuestionText</h5>
+
+            @Html.Raw("<br />")
+
+            @* <div id="theDiv" style="display:none;">
+                @Html.Kendo().TextBoxFor(tuple => tuple.FirstPageScoringVM.QuestionId).Value(question.QuestionId.ToString())
+            </div> *@
+
+            @* <div class="inputDiv1">
+                <label>Score (0, 1, or 2):</label>
+                @Html.Kendo().DropDownListFor(tuple => tuple.FirstPageScoringVM.Scores).DataTextField("Text").DataValueField("Value").DataSource(source => { source.Read(read => { read.Action("getScores", "EvaluatorView"); }); })
+            </div> *@
+
+            <div class="inputDiv1">
+                <label>Score:</label>
+                @Html.Kendo().TextBoxFor(tuple => tuple.FirstPageScoringVM.Scores)
+            </div>
+
+            @Html.Raw("<br />")
+            @Html.Raw("<br />")
+            
+        }
+        <div class="submitBtnDiv">
+                <button type="submit" class="k-button">Submit</button>
+        </div>
+    }
+    
+
+    <a href="@Url.Action("ViewAssignedEPAs", "EvaluatorView")" style="text-decoration:none !important;"><span class="k-button"><i class="fas fa-ban fa-1x pr-2"></i>Cancel</span></a>
+
+   
+</div>

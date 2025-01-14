@@ -1,0 +1,140 @@
+﻿@using Kendo.Mvc.UI;
+
+@{
+    EPA.Classes.GetDbItems dbItemsGet = new EPA.Classes.GetDbItems();
+    // need to retrieve questions associated with the EPA as in EPA 1a etc.
+    // need to be saved as result items where the score is 0, 1 or 2 (yes, no, not applicable)
+
+}
+
+@model EPA.Models.ViewModels.EPASecondPageScoringViewModel
+
+<style>
+
+    #ScoreEPAPage2 {
+        margin-top: 2%;
+        text-align: center !important;
+    }
+
+    label {
+        display: block;
+    }
+
+    .inputDiv2 {
+        display: inline-block;
+        width: 50px;
+    }
+
+    .submitBtnDiv {
+        margin-top: 4%;
+        margin-bottom: 1%;
+    }
+
+    div.balSlider {
+        width: 100%;
+    }
+
+    div.balSlider .k-slider-selection {
+        display: none;
+    }
+
+</style>
+
+
+<div id="ScoreEPAPage2">
+
+    <!-- if there is an error, show the message at the top of the page that has been returned from the controller -->
+    @if (TempData["ValidationMsg"] != null)
+    {
+        <div class="form-row" id="AlertDiv">
+            <div class="alert alert-danger text-center" style="width:400px;margin:0 auto;margin-top:2%;" role="alert">
+                @TempData["ValidationMsg"]
+            </div>
+        </div>
+    }
+    @Html.Raw("<br />")
+
+    <h3>Concepts associated with this EPA:</h3>
+    @Html.Raw("<br />")
+
+    @foreach (var question in ViewBag.questions)
+    {
+        <h5>- @question.QuestionText</h5>
+    }
+
+    @Html.Raw("<br />")
+    @Html.Raw("<br />")
+    @Html.Raw("<br />")
+
+    <h3>Overall Score and Comments:</h3>
+
+    @using (Html.BeginForm("SubmitEPAScores", "EvaluatorView", FormMethod.Post, new { @id = "SubmitEPAScorePage2" }))
+    {
+
+        <div>
+            <h5>1: Observed Only (student observed and supervisor had to do)</h5>
+            <h5>2: Direct Supervision (student is able to do skill but requires significant coaching)</h5>
+            <h5>3: Indirect Supervision (student is able to perform skill adequately with minimal guidance)</h5>
+            <h5>4: Oversight Only (student is able to do skill competently without guidance)</h5>
+        </div>
+
+        @Html.Raw("<br />")
+
+
+
+        <div class="k-widget k-slider">
+            <div>
+                @(Html.Kendo()
+                    .SliderFor(m => m.AgScore)
+                    .Min(1)
+                    .Max(4)
+                    .SmallStep(1)
+                    .LargeStep(1)
+                    .IncreaseButtonTitle("Right")
+                    .DecreaseButtonTitle("Left")
+                    .Events(e => e.Change("onChange"))
+                    .HtmlAttributes(new { @class = "balSlider", title = "Slider" })
+                    .ShowButtons(true)
+                    .TickPlacement(SliderTickPlacement.Both)
+                )
+                
+            </div>
+        </div>
+
+        @Html.Raw("<br />")
+        @Html.Raw("<br />")
+        @Html.Raw("<br />")
+        @Html.Raw("<br />")
+
+        <div class="inputDiv1">
+            <h5>What went well?</h5>
+            @Html.TextAreaFor(x => x.Comment1, new { @class = "k-textbox", style = "width: 100%;", placeholder = "Notes... Descriptions..." })
+
+        </div>
+
+        @Html.Raw("<br />")
+
+        <div class="inputDiv1">
+            <h5>What could be improved:</h5>
+            @Html.TextAreaFor(x => x.Comment2, new { @class = "k-textbox", style = "width: 100%;", placeholder = "Notes... Descriptions..." })
+
+        </div>
+
+        @Html.Raw("<br />")
+
+        <div class="inputDiv1">
+            <h5>Suggested Action Plan:</h5>
+            @Html.TextAreaFor(x => x.Comment3, new { @class = "k-textbox", style = "width: 100%;", placeholder = "Notes... Descriptions..." })
+
+        </div>
+
+
+        <div class="submitBtnDiv">
+            <button type="submit" class="k-button">Submit</button>
+        </div>
+    }
+    
+    <a href="@Url.Action("ViewAssignedEPAs", "EvaluatorView")" style="text-decoration:none !important;"><span class="k-button"><i class="fas fa-ban fa-1x pr-2"></i>Cancel</span></a>
+
+
+</div>
