@@ -70,7 +70,7 @@ steps:
     ActionIISWebsite: StopWebsite
     StartStopWebsiteName: 'EPA Site'
 
-- powershell: 'netsh http delete sslcert ipport={IP}'
+- powershell: 'netsh http delete sslcert ipport=$(Parameters.IP)'
   displayName: 'Remove SSL Cert (Readded via Deployment)'
 
 - task: IISWebAppManagementOnMachineGroup@0
