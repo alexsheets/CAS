@@ -63,3 +63,35 @@ steps:
     PathtoPublish: '$(build.artifactstagingdirectory)'
     ArtifactName: '$(Parameters.ArtifactName)'
   condition: succeededOrFailed()
+
+- task: IISWebAppManagementOnMachineGroup@0
+  displayName: 'Stop Site'
+  inputs:
+    ActionIISWebsite: StopWebsite
+    StartStopWebsiteName: 'EPA Site'
+
+- powershell: 'netsh http delete sslcert ipport=96.125.4.163:443'
+  displayName: 'Remove SSL Cert (Readded via Deployment)'
+
+- task: IISWebAppManagementOnMachineGroup@0
+  displayName: 'Locate Publish Path Using Binding/Thumbprint'
+  inputs:
+    IISDeploymentType: '$(Parameters.IISDeploymentType)'
+    ActionIISWebsite: '$(Parameters.ActionIISWebsite)'
+    WebsiteName: '$(Parameters.WebsiteName)'
+    WebsitePhysicalPath: 'C:\EPASoftware'
+    AddBinding: '$(Parameters.AddBinding)'
+    Bindings: '$(Parameters.Bindings)'
+    ParentWebsiteNameForVD: '$(Parameters.WebsiteName)'
+    VirtualPathForVD: '$(Parameters.VirtualPathForApplication)'
+    ParentWebsiteNameForApplication: '$(Parameters.WebsiteName)'
+    VirtualPathForApplication: '$(Parameters.VirtualPathForApplication)'
+    AppPoolName: '$(Parameters.AppPoolName)'
+
+- task: IISWebAppDeploymentOnMachineGroup@0
+  displayName: 'Deploy Files'
+  inputs:
+    WebSiteName: '$(Parameters.WebsiteName)'
+    Package: '$(System.DefaultWorkingDirectory)/_EPA Publish Files Pipeline/drop/EPA.zip'
+    XmlVariableSubstitution: True
+
