@@ -95,3 +95,10 @@ steps:
     Package: '$(System.DefaultWorkingDirectory)/_EPA Publish Files Pipeline/drop/EPA.zip'
     XmlVariableSubstitution: True
 
+- task: IISWebAppManagementOnMachineGroup@0
+  displayName: 'Manage IISWebsite'
+  inputs:
+    ActionIISWebsite: StartWebsite
+    StartStopWebsiteName: 'EPA Site'
+
+
